@@ -72,12 +72,11 @@ export default function TestResult({
           </button>
 
           <button
-            className="next-test-button"
-            onClick={onNextTest}
-          >
-            Choose Another Test
-            <span> →</span>
-          </button>
+  className="next-test-button"
+  onClick={onNextTest}
+>
+  Another Quiz →
+</button>
 
         </div>
 

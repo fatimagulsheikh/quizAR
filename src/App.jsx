@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import TestSelector from "./components/TestSelector";
 import TestScreen from "./components/TestScreen";
 import TestResult from "./components/TestResult";
 
@@ -35,7 +34,10 @@ function App() {
      STATES
   ========================= */
 
-  const [testNumber, setTestNumber] = useState(null);
+  // 1 = first 30
+  // 2 = second 30
+  // 3 = last 30
+  const [testNumber, setTestNumber] = useState(1);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
 
@@ -54,6 +56,12 @@ function App() {
       setIsLoggedIn(true);
       setPasswordError("");
       setPassword("");
+
+      // Login ke baad direct first quiz
+      setTestNumber(1);
+      setCurrentQuestion(0);
+      setShowResult(false);
+      setAnswerError("");
     } else {
       setPasswordError(
         "Incorrect password. Please try again."
@@ -76,9 +84,7 @@ function App() {
   ========================= */
 
   const currentTest =
-    testNumber !== null
-      ? tests[testNumber - 1] || []
-      : [];
+    tests[testNumber - 1] || [];
 
   /* =========================
      CURRENT QUESTION
@@ -95,39 +101,21 @@ function App() {
   ========================= */
 
   const globalQuestionNumber =
-    testNumber !== null
-      ? (testNumber - 1) * 30 +
-        currentQuestion +
-        1
-      : 0;
-
-  /* =========================
-     SELECT TEST
-  ========================= */
-
-  const handleSelectTest = (number) => {
-    setTestNumber(number);
-
-    setCurrentQuestion(0);
-
-    setShowResult(false);
-
-    setAnswerError("");
-  };
+    (testNumber - 1) * 30 +
+    currentQuestion +
+    1;
 
   /* =========================
      SELECT ANSWER
   ========================= */
 
   const handleSelectAnswer = (answer) => {
-    if (testNumber === null) return;
-
     setSelectedAnswers((previous) => ({
       ...previous,
       [globalQuestionNumber]: answer,
     }));
 
-    // Remove error when answer is selected
+    // Answer select hone par error remove
     setAnswerError("");
   };
 
@@ -136,11 +124,10 @@ function App() {
   ========================= */
 
   const handleNext = () => {
-    // Current question answer
     const currentAnswer =
       selectedAnswers[globalQuestionNumber];
 
-    // Don't allow next without answer
+    // Answer select nahi kiya
     if (!currentAnswer) {
       setAnswerError(
         "Please select an answer before continuing."
@@ -149,10 +136,13 @@ function App() {
       return;
     }
 
-    // Remove error
+    // Error remove
     setAnswerError("");
 
-    // Go to next question
+    /* =========================
+       NEXT QUESTION
+    ========================= */
+
     if (
       currentQuestion <
       currentTest.length - 1
@@ -160,10 +150,15 @@ function App() {
       setCurrentQuestion(
         (previous) => previous + 1
       );
-    } else {
-      // Test completed
-      setShowResult(true);
+
+      return;
     }
+
+    /* =========================
+       30 QUESTIONS COMPLETED
+    ========================= */
+
+    setShowResult(true);
   };
 
   /* =========================
@@ -198,14 +193,10 @@ function App() {
   };
 
   /* =========================
-     CURRENT TEST SCORE
+     CURRENT QUIZ SCORE
   ========================= */
 
   const calculateScore = () => {
-    if (testNumber === null) {
-      return 0;
-    }
-
     let score = 0;
 
     currentTest.forEach((item, index) => {
@@ -232,29 +223,23 @@ function App() {
   const calculateFinalScore = () => {
     let totalScore = 0;
 
-    tests.forEach((test, testIndex) => {
-      test.forEach(
-        (item, questionIndex) => {
-          const number =
-            testIndex * 30 +
-            questionIndex +
-            1;
+    questions.forEach((item, index) => {
+      const questionNumber =
+        index + 1;
 
-          if (
-            selectedAnswers[number] ===
-            item.answer
-          ) {
-            totalScore++;
-          }
-        }
-      );
+      if (
+        selectedAnswers[questionNumber] ===
+        item.answer
+      ) {
+        totalScore++;
+      }
     });
 
     return totalScore;
   };
 
   /* =========================
-     REVIEW TEST
+     REVIEW CURRENT QUIZ
   ========================= */
 
   const handleReview = () => {
@@ -266,17 +251,28 @@ function App() {
   };
 
   /* =========================
-     CHOOSE ANOTHER TEST
+     ANOTHER QUIZ
+     30 → 30 → 30
   ========================= */
 
-  const handleChooseAnotherTest = () => {
-    setTestNumber(null);
+  const handleAnotherQuiz = () => {
+    // Test 1 → Test 2
+    if (testNumber < 3) {
+      setTestNumber(
+        (previous) => previous + 1
+      );
 
-    setCurrentQuestion(0);
+      setCurrentQuestion(0);
 
-    setShowResult(false);
+      setShowResult(false);
 
-    setAnswerError("");
+      setAnswerError("");
+
+      return;
+    }
+
+    // Test 3 ke baad kuch nahi
+    // Final result already show hoga
   };
 
   /* =========================
@@ -284,7 +280,7 @@ function App() {
   ========================= */
 
   const handleStartAgain = () => {
-    setTestNumber(null);
+    setTestNumber(1);
 
     setCurrentQuestion(0);
 
@@ -315,7 +311,7 @@ function App() {
 
           <p>
             Please enter the password to
-            access the test.
+            access the quiz.
           </p>
 
           <div className="password-input-wrapper">
@@ -358,27 +354,16 @@ function App() {
   }
 
   /* =====================================================
-     MAIN WEBSITE
+     MAIN QUIZ
   ===================================================== */
 
   return (
     <main className="app">
 
-      {/* =========================
-          TEST SELECTION
-      ========================= */}
-
-      {testNumber === null ? (
-        <TestSelector
-          onSelectTest={
-            handleSelectTest
-          }
-        />
-
-      ) : !showResult ? (
+      {!showResult ? (
 
         /* =========================
-           TEST SCREEN
+           QUIZ SCREEN
         ========================= */
 
         <TestScreen
@@ -402,10 +387,10 @@ function App() {
           answerError={answerError}
         />
 
-      ) : (
+      ) : testNumber < 3 ? (
 
         /* =========================
-           RESULT SCREEN
+           QUIZ 1 / QUIZ 2 RESULT
         ========================= */
 
         <div className="test-container">
@@ -414,17 +399,16 @@ function App() {
 
             <div className="header-left">
 
-              <h1>TEST</h1>
+              <h1>QUIZ</h1>
 
               <span className="test-badge">
-                Test {testNumber}
+                Quiz {testNumber}
               </span>
 
             </div>
 
             <div className="header-right">
 
-              Questão{" "}
               {testNumber * 30}
               {" "} / 90
 
@@ -432,272 +416,278 @@ function App() {
 
           </header>
 
-          {testNumber < 3 ? (
+          <TestResult
+            testNumber={testNumber}
+            score={calculateScore()}
+            currentTest={currentTest}
+            selectedAnswers={
+              selectedAnswers
+            }
+            onNextTest={
+              handleAnotherQuiz
+            }
+            onReview={handleReview}
+          />
 
-            /* =========================
-               TEST RESULT
-            ========================= */
+        </div>
 
-            <TestResult
-              testNumber={testNumber}
-              score={calculateScore()}
-              currentTest={currentTest}
-              selectedAnswers={
-                selectedAnswers
-              }
-              onNextTest={
-                handleChooseAnotherTest
-              }
-              onReview={handleReview}
-            />
+      ) : (
 
-          ) : (
+        /* =========================
+           FINAL RESULT
+        ========================= */
 
-            /* =========================
-               FINAL RESULT
-            ========================= */
+        <div className="test-container">
 
-            <div className="result-page">
+          <header className="test-header">
 
-              <div className="result-card">
+            <div className="header-left">
 
-                <div className="result-icon">
-                  ✓
-                </div>
+              <h1>QUIZ</h1>
 
-                <h2>
-                  All Tests Completed!
-                </h2>
+              <span className="test-badge">
+                Completed
+              </span>
 
-                <p className="result-subtitle">
-                  You completed all 90 questions.
-                </p>
+            </div>
 
-                <div className="result-score">
+            <div className="header-right">
+              90 / 90
+            </div>
 
-                  {calculateFinalScore()}
+          </header>
+
+          <div className="result-page">
+
+            <div className="result-card">
+
+              <div className="result-icon">
+                ✓
+              </div>
+
+              <h2>
+                All Quizzes Completed!
+              </h2>
+
+              <p className="result-subtitle">
+                You completed all 90 questions.
+              </p>
+
+              <div className="result-score">
+
+                {calculateFinalScore()}
+
+                <span>
+                  {" "} / 90
+                </span>
+
+              </div>
+
+              <div className="result-details">
+
+                <div className="result-item">
 
                   <span>
-                    {" "} / 90
+                    Correct Answers
                   </span>
 
-                </div>
-
-                <div className="result-details">
-
-                  <div className="result-item">
-
-                    <span>
-                      Correct Answers
-                    </span>
-
-                    <strong>
-                      {calculateFinalScore()}
-                    </strong>
-
-                  </div>
-
-                  <div className="result-item">
-
-                    <span>
-                      Wrong Answers
-                    </span>
-
-                    <strong>
-                      {90 -
-                        calculateFinalScore()}
-                    </strong>
-
-                  </div>
-
-                  <div className="result-item">
-
-                    <span>
-                      Percentage
-                    </span>
-
-                    <strong>
-
-                      {Math.round(
-                        (calculateFinalScore() /
-                          90) *
-                          100
-                      )}
-
-                      %
-
-                    </strong>
-
-                  </div>
+                  <strong>
+                    {calculateFinalScore()}
+                  </strong>
 
                 </div>
 
-                <div className="result-buttons">
+                <div className="result-item">
 
-                  <button
-                    className="review-button"
-                    onClick={
-                      handleChooseAnotherTest
-                    }
-                  >
-                    Choose Another Test
-                  </button>
+                  <span>
+                    Wrong Answers
+                  </span>
 
-                  <button
-                    className="next-test-button"
-                    onClick={
-                      handleStartAgain
-                    }
-                  >
-                    Start Again
-                  </button>
+                  <strong>
+                    {90 -
+                      calculateFinalScore()}
+                  </strong>
+
+                </div>
+
+                <div className="result-item">
+
+                  <span>
+                    Percentage
+                  </span>
+
+                  <strong>
+
+                    {Math.round(
+                      (calculateFinalScore() /
+                        90) *
+                        100
+                    )}
+
+                    %
+
+                  </strong>
 
                 </div>
 
               </div>
 
-              {/* =========================
-                  FINAL QUESTIONS REVIEW
-              ========================= */}
+              <div className="result-buttons">
 
-              <div className="answers-review">
-
-                <div className="answers-review-header">
-
-                  <h2>
-                    All Questions Review
-                  </h2>
-
-                  <p>
-                    Review your answers from all 90 questions.
-                  </p>
-
-                </div>
-
-                {questions.map(
-                  (item, index) => {
-
-                    const questionNumber =
-                      index + 1;
-
-                    const userAnswer =
-                      selectedAnswers[
-                        questionNumber
-                      ];
-
-                    const correctAnswer =
-                      item.answer;
-
-                    const isCorrect =
-                      userAnswer ===
-                      correctAnswer;
-
-                    return (
-                      <div
-                        className={`review-question ${
-                          isCorrect
-                            ? "review-correct"
-                            : "review-wrong"
-                        }`}
-                        key={
-                          questionNumber
-                        }
-                      >
-
-                        <div className="review-question-header">
-
-                          <div className="review-question-number">
-
-                            Question{" "}
-                            {questionNumber}
-
-                          </div>
-
-                          <div
-                            className={`review-status ${
-                              isCorrect
-                                ? "status-correct"
-                                : "status-wrong"
-                            }`}
-                          >
-
-                            {isCorrect
-                              ? "✓ Correct"
-                              : "✕ Wrong"}
-
-                          </div>
-
-                        </div>
-
-                        <div className="review-question-text">
-
-                          {item.question}
-
-                        </div>
-
-                        {item.image && (
-                          <div className="review-question-image">
-
-                            <img
-                              src={
-                                item.image
-                              }
-                              alt={`Question ${questionNumber}`}
-                            />
-
-                          </div>
-                        )}
-
-                        <div className="review-answers">
-
-                          <div
-                            className={`review-answer ${
-                              userAnswer ===
-                              correctAnswer
-                                ? "answer-correct"
-                                : userAnswer
-                                  ? "answer-wrong"
-                                  : ""
-                            }`}
-                          >
-
-                            <span>
-                              Your Answer
-                            </span>
-
-                            <strong>
-                              {userAnswer ||
-                                "Not Answered"}
-                            </strong>
-
-                          </div>
-
-                          <div className="review-answer correct-answer">
-
-                            <span>
-                              Correct Answer
-                            </span>
-
-                            <strong>
-                              {correctAnswer}
-                            </strong>
-
-                          </div>
-
-                        </div>
-
-                      </div>
-                    );
+                <button
+                  className="next-test-button"
+                  onClick={
+                    handleStartAgain
                   }
-                )}
+                >
+                  Start Again
+                </button>
 
               </div>
 
             </div>
 
-          )}
+            {/* =========================
+                ALL QUESTIONS REVIEW
+            ========================= */}
+
+            <div className="answers-review">
+
+              <div className="answers-review-header">
+
+                <h2>
+                  All Questions Review
+                </h2>
+
+                <p>
+                  Review your answers from all 90 questions.
+                </p>
+
+              </div>
+
+              {questions.map(
+                (item, index) => {
+
+                  const questionNumber =
+                    index + 1;
+
+                  const userAnswer =
+                    selectedAnswers[
+                      questionNumber
+                    ];
+
+                  const correctAnswer =
+                    item.answer;
+
+                  const isCorrect =
+                    userAnswer ===
+                    correctAnswer;
+
+                  return (
+                    <div
+                      className={`review-question ${
+                        isCorrect
+                          ? "review-correct"
+                          : "review-wrong"
+                      }`}
+                      key={
+                        questionNumber
+                      }
+                    >
+
+                      <div className="review-question-header">
+
+                        <div className="review-question-number">
+
+                          Question{" "}
+                          {questionNumber}
+
+                        </div>
+
+                        <div
+                          className={`review-status ${
+                            isCorrect
+                              ? "status-correct"
+                              : "status-wrong"
+                          }`}
+                        >
+
+                          {isCorrect
+                            ? "✓ Correct"
+                            : "✕ Wrong"}
+
+                        </div>
+
+                      </div>
+
+                      <div className="review-question-text">
+
+                        {item.question}
+
+                      </div>
+
+                      {item.image && (
+                        <div className="review-question-image">
+
+                          <img
+                            src={
+                              item.image
+                            }
+                            alt={`Question ${questionNumber}`}
+                          />
+
+                        </div>
+                      )}
+
+                      <div className="review-answers">
+
+                        <div
+                          className={`review-answer ${
+                            userAnswer ===
+                            correctAnswer
+                              ? "answer-correct"
+                              : userAnswer
+                                ? "answer-wrong"
+                                : ""
+                          }`}
+                        >
+
+                          <span>
+                            Your Answer
+                          </span>
+
+                          <strong>
+                            {userAnswer ||
+                              "Not Answered"}
+                          </strong>
+
+                        </div>
+
+                        <div className="review-answer correct-answer">
+
+                          <span>
+                            Correct Answer
+                          </span>
+
+                          <strong>
+                            {correctAnswer}
+                          </strong>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                  );
+                }
+              )}
+
+            </div>
+
+          </div>
 
         </div>
+
       )}
 
     </main>
