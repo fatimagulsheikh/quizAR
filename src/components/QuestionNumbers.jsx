@@ -6,6 +6,7 @@ export default function QuestionNumbers({
   onQuestionChange,
   onPrevious,
   onNext,
+  answerError,
 }) {
   return (
     <div className="question-navigation">
@@ -23,7 +24,6 @@ export default function QuestionNumbers({
       <div className="question-numbers-list">
 
         {currentTest.map((_, index) => {
-
           const globalNumber =
             (testNumber - 1) * 30 + index + 1;
 
@@ -49,6 +49,13 @@ export default function QuestionNumbers({
         })}
 
       </div>
+
+      {/* ANSWER ERROR */}
+      {answerError && (
+        <div className="answer-error">
+          ⚠ {answerError}
+        </div>
+      )}
 
       {/* RIGHT ARROW */}
       <button

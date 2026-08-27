@@ -16,7 +16,9 @@ function App() {
   const CORRECT_PASSWORD = "033220";
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const [password, setPassword] = useState("");
+
   const [passwordError, setPasswordError] = useState("");
 
   /* =========================
@@ -35,14 +37,13 @@ function App() {
 
   const [testNumber, setTestNumber] = useState(null);
 
-  const [currentQuestion, setCurrentQuestion] =
-    useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
 
-  const [selectedAnswers, setSelectedAnswers] =
-    useState({});
+  const [selectedAnswers, setSelectedAnswers] = useState({});
 
-  const [showResult, setShowResult] =
-    useState(false);
+  const [answerError, setAnswerError] = useState("");
+
+  const [showResult, setShowResult] = useState(false);
 
   /* =========================
      PASSWORD LOGIN
@@ -54,12 +55,14 @@ function App() {
       setPasswordError("");
       setPassword("");
     } else {
-      setPasswordError("Incorrect password. Please try again.");
+      setPasswordError(
+        "Incorrect password. Please try again."
+      );
     }
   };
 
   /* =========================
-     ENTER KEY LOGIN
+     ENTER KEY
   ========================= */
 
   const handlePasswordKeyDown = (event) => {
@@ -74,11 +77,16 @@ function App() {
 
   const currentTest =
     testNumber !== null
-      ? tests[testNumber - 1]
+      ? tests[testNumber - 1] || []
       : [];
 
+  /* =========================
+     CURRENT QUESTION
+  ========================= */
+
   const question =
-    currentTest.length > 0
+    currentTest.length > 0 &&
+    currentTest[currentQuestion]
       ? currentTest[currentQuestion]
       : null;
 
@@ -99,8 +107,12 @@ function App() {
 
   const handleSelectTest = (number) => {
     setTestNumber(number);
+
     setCurrentQuestion(0);
+
     setShowResult(false);
+
+    setAnswerError("");
   };
 
   /* =========================
@@ -114,6 +126,9 @@ function App() {
       ...previous,
       [globalQuestionNumber]: answer,
     }));
+
+    // Remove error when answer is selected
+    setAnswerError("");
   };
 
   /* =========================
@@ -121,11 +136,32 @@ function App() {
   ========================= */
 
   const handleNext = () => {
-    if (currentQuestion < currentTest.length - 1) {
+    // Current question answer
+    const currentAnswer =
+      selectedAnswers[globalQuestionNumber];
+
+    // Don't allow next without answer
+    if (!currentAnswer) {
+      setAnswerError(
+        "Please select an answer before continuing."
+      );
+
+      return;
+    }
+
+    // Remove error
+    setAnswerError("");
+
+    // Go to next question
+    if (
+      currentQuestion <
+      currentTest.length - 1
+    ) {
       setCurrentQuestion(
         (previous) => previous + 1
       );
     } else {
+      // Test completed
       setShowResult(true);
     }
   };
@@ -139,16 +175,26 @@ function App() {
       setCurrentQuestion(
         (previous) => previous - 1
       );
+
+      setAnswerError("");
     }
   };
 
   /* =========================
-     JUMP TO QUESTION
+     QUESTION NUMBER CLICK
   ========================= */
 
   const handleQuestionChange = (index) => {
-    setCurrentQuestion(index);
-    setShowResult(false);
+    if (
+      index >= 0 &&
+      index < currentTest.length
+    ) {
+      setCurrentQuestion(index);
+
+      setShowResult(false);
+
+      setAnswerError("");
+    }
   };
 
   /* =========================
@@ -156,7 +202,9 @@ function App() {
   ========================= */
 
   const calculateScore = () => {
-    if (testNumber === null) return 0;
+    if (testNumber === null) {
+      return 0;
+    }
 
     let score = 0;
 
@@ -185,19 +233,21 @@ function App() {
     let totalScore = 0;
 
     tests.forEach((test, testIndex) => {
-      test.forEach((item, questionIndex) => {
-        const number =
-          testIndex * 30 +
-          questionIndex +
-          1;
+      test.forEach(
+        (item, questionIndex) => {
+          const number =
+            testIndex * 30 +
+            questionIndex +
+            1;
 
-        if (
-          selectedAnswers[number] ===
-          item.answer
-        ) {
-          totalScore++;
+          if (
+            selectedAnswers[number] ===
+            item.answer
+          ) {
+            totalScore++;
+          }
         }
-      });
+      );
     });
 
     return totalScore;
@@ -209,7 +259,10 @@ function App() {
 
   const handleReview = () => {
     setCurrentQuestion(0);
+
     setShowResult(false);
+
+    setAnswerError("");
   };
 
   /* =========================
@@ -218,8 +271,12 @@ function App() {
 
   const handleChooseAnotherTest = () => {
     setTestNumber(null);
+
     setCurrentQuestion(0);
+
     setShowResult(false);
+
+    setAnswerError("");
   };
 
   /* =========================
@@ -228,9 +285,14 @@ function App() {
 
   const handleStartAgain = () => {
     setTestNumber(null);
+
     setCurrentQuestion(0);
+
     setSelectedAnswers({});
+
     setShowResult(false);
+
+    setAnswerError("");
   };
 
   /* =====================================================
@@ -263,10 +325,15 @@ function App() {
               value={password}
               placeholder="Enter password"
               onChange={(event) => {
-                setPassword(event.target.value);
+                setPassword(
+                  event.target.value
+                );
+
                 setPasswordError("");
               }}
-              onKeyDown={handlePasswordKeyDown}
+              onKeyDown={
+                handlePasswordKeyDown
+              }
             />
 
           </div>
@@ -291,23 +358,28 @@ function App() {
   }
 
   /* =====================================================
-     WEBSITE
+     MAIN WEBSITE
   ===================================================== */
 
   return (
     <main className="app">
 
-      {/* TEST SELECTION */}
+      {/* =========================
+          TEST SELECTION
+      ========================= */}
 
       {testNumber === null ? (
-
         <TestSelector
-          onSelectTest={handleSelectTest}
+          onSelectTest={
+            handleSelectTest
+          }
         />
 
       ) : !showResult ? (
 
-        /* TEST SCREEN */
+        /* =========================
+           TEST SCREEN
+        ========================= */
 
         <TestScreen
           testNumber={testNumber}
@@ -315,15 +387,26 @@ function App() {
           currentQuestion={currentQuestion}
           question={question}
           selectedAnswers={selectedAnswers}
-          onSelectAnswer={handleSelectAnswer}
-          onQuestionChange={handleQuestionChange}
-          onPrevious={handlePrevious}
-          onNext={handleNext}
+          onSelectAnswer={
+            handleSelectAnswer
+          }
+          onQuestionChange={
+            handleQuestionChange
+          }
+          onPrevious={
+            handlePrevious
+          }
+          onNext={
+            handleNext
+          }
+          answerError={answerError}
         />
 
       ) : (
 
-        /* RESULT SCREEN */
+        /* =========================
+           RESULT SCREEN
+        ========================= */
 
         <div className="test-container">
 
@@ -340,16 +423,28 @@ function App() {
             </div>
 
             <div className="header-right">
-              Questão {testNumber * 30} / 90
+
+              Questão{" "}
+              {testNumber * 30}
+              {" "} / 90
+
             </div>
 
           </header>
 
           {testNumber < 3 ? (
 
+            /* =========================
+               TEST RESULT
+            ========================= */
+
             <TestResult
               testNumber={testNumber}
               score={calculateScore()}
+              currentTest={currentTest}
+              selectedAnswers={
+                selectedAnswers
+              }
               onNextTest={
                 handleChooseAnotherTest
               }
@@ -358,83 +453,243 @@ function App() {
 
           ) : (
 
-            /* FINAL RESULT */
+            /* =========================
+               FINAL RESULT
+            ========================= */
 
-            <div className="result-card">
+            <div className="result-page">
 
-              <div className="result-icon">
-                ✓
-              </div>
+              <div className="result-card">
 
-              <h2>
-                All Tests Completed!
-              </h2>
-
-              <p className="result-subtitle">
-                You completed all 90 questions.
-              </p>
-
-              <div className="result-score">
-                {calculateFinalScore()}
-                <span> / 90</span>
-              </div>
-
-              <div className="result-details">
-
-                <div className="result-item">
-                  <span>
-                    Correct Answers
-                  </span>
-
-                  <strong>
-                    {calculateFinalScore()}
-                  </strong>
+                <div className="result-icon">
+                  ✓
                 </div>
 
-                <div className="result-item">
+                <h2>
+                  All Tests Completed!
+                </h2>
+
+                <p className="result-subtitle">
+                  You completed all 90 questions.
+                </p>
+
+                <div className="result-score">
+
+                  {calculateFinalScore()}
+
                   <span>
-                    Wrong Answers
+                    {" "} / 90
                   </span>
 
-                  <strong>
-                    {90 - calculateFinalScore()}
-                  </strong>
                 </div>
 
-                <div className="result-item">
-                  <span>
-                    Percentage
-                  </span>
+                <div className="result-details">
 
-                  <strong>
-                    {Math.round(
-                      (calculateFinalScore() /
-                        90) *
-                        100
-                    )}
-                    %
-                  </strong>
+                  <div className="result-item">
+
+                    <span>
+                      Correct Answers
+                    </span>
+
+                    <strong>
+                      {calculateFinalScore()}
+                    </strong>
+
+                  </div>
+
+                  <div className="result-item">
+
+                    <span>
+                      Wrong Answers
+                    </span>
+
+                    <strong>
+                      {90 -
+                        calculateFinalScore()}
+                    </strong>
+
+                  </div>
+
+                  <div className="result-item">
+
+                    <span>
+                      Percentage
+                    </span>
+
+                    <strong>
+
+                      {Math.round(
+                        (calculateFinalScore() /
+                          90) *
+                          100
+                      )}
+
+                      %
+
+                    </strong>
+
+                  </div>
+
+                </div>
+
+                <div className="result-buttons">
+
+                  <button
+                    className="review-button"
+                    onClick={
+                      handleChooseAnotherTest
+                    }
+                  >
+                    Choose Another Test
+                  </button>
+
+                  <button
+                    className="next-test-button"
+                    onClick={
+                      handleStartAgain
+                    }
+                  >
+                    Start Again
+                  </button>
+
                 </div>
 
               </div>
 
-              <div className="result-buttons">
+              {/* =========================
+                  FINAL QUESTIONS REVIEW
+              ========================= */}
 
-                <button
-                  className="review-button"
-                  onClick={
-                    handleChooseAnotherTest
+              <div className="answers-review">
+
+                <div className="answers-review-header">
+
+                  <h2>
+                    All Questions Review
+                  </h2>
+
+                  <p>
+                    Review your answers from all 90 questions.
+                  </p>
+
+                </div>
+
+                {questions.map(
+                  (item, index) => {
+
+                    const questionNumber =
+                      index + 1;
+
+                    const userAnswer =
+                      selectedAnswers[
+                        questionNumber
+                      ];
+
+                    const correctAnswer =
+                      item.answer;
+
+                    const isCorrect =
+                      userAnswer ===
+                      correctAnswer;
+
+                    return (
+                      <div
+                        className={`review-question ${
+                          isCorrect
+                            ? "review-correct"
+                            : "review-wrong"
+                        }`}
+                        key={
+                          questionNumber
+                        }
+                      >
+
+                        <div className="review-question-header">
+
+                          <div className="review-question-number">
+
+                            Question{" "}
+                            {questionNumber}
+
+                          </div>
+
+                          <div
+                            className={`review-status ${
+                              isCorrect
+                                ? "status-correct"
+                                : "status-wrong"
+                            }`}
+                          >
+
+                            {isCorrect
+                              ? "✓ Correct"
+                              : "✕ Wrong"}
+
+                          </div>
+
+                        </div>
+
+                        <div className="review-question-text">
+
+                          {item.question}
+
+                        </div>
+
+                        {item.image && (
+                          <div className="review-question-image">
+
+                            <img
+                              src={
+                                item.image
+                              }
+                              alt={`Question ${questionNumber}`}
+                            />
+
+                          </div>
+                        )}
+
+                        <div className="review-answers">
+
+                          <div
+                            className={`review-answer ${
+                              userAnswer ===
+                              correctAnswer
+                                ? "answer-correct"
+                                : userAnswer
+                                  ? "answer-wrong"
+                                  : ""
+                            }`}
+                          >
+
+                            <span>
+                              Your Answer
+                            </span>
+
+                            <strong>
+                              {userAnswer ||
+                                "Not Answered"}
+                            </strong>
+
+                          </div>
+
+                          <div className="review-answer correct-answer">
+
+                            <span>
+                              Correct Answer
+                            </span>
+
+                            <strong>
+                              {correctAnswer}
+                            </strong>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+                    );
                   }
-                >
-                  Choose Another Test
-                </button>
-
-                <button
-                  className="next-test-button"
-                  onClick={handleStartAgain}
-                >
-                  Start Again
-                </button>
+                )}
 
               </div>
 
@@ -443,7 +698,6 @@ function App() {
           )}
 
         </div>
-
       )}
 
     </main>

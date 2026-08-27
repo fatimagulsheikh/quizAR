@@ -12,6 +12,7 @@ export default function TestScreen({
   onQuestionChange,
   onPrevious,
   onNext,
+  answerError,
 }) {
   const globalQuestionNumber =
     (testNumber - 1) * 30 + currentQuestion + 1;
@@ -48,6 +49,7 @@ export default function TestScreen({
         onQuestionChange={onQuestionChange}
         onPrevious={onPrevious}
         onNext={onNext}
+        answerError={answerError}
       />
 
       {/* BOTTOM ARROWS */}
