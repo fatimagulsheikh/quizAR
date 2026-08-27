@@ -1280,3 +1280,193 @@ button {
     font-size: 10px;
   }
 }
+
+/* =========================================
+   PASSWORD SCREEN
+========================================= */
+
+.password-page {
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: #f5faf7;
+}
+
+.password-card {
+  width: 100%;
+  max-width: 420px;
+
+  padding: 45px 35px;
+
+  background: #ffffff;
+
+  border: 1px solid #dcebe3;
+
+  text-align: center;
+
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
+}
+
+.password-icon {
+  width: 65px;
+  height: 65px;
+
+  margin: 0 auto 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #e9f6ef;
+
+  font-size: 28px;
+}
+
+.password-card h1 {
+  margin: 0 0 10px;
+
+  font-size: 27px;
+  font-weight: 800;
+
+  color: #1d2b24;
+}
+
+.password-card p {
+  margin: 0 0 25px;
+
+  color: #777;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+.password-input-wrapper {
+  width: 100%;
+}
+
+.password-input-wrapper input {
+  width: 100%;
+
+  height: 48px;
+
+  padding: 0 15px;
+
+  border: 1px solid #d4dfda;
+
+  outline: none;
+
+  font-size: 15px;
+
+  text-align: center;
+
+  box-sizing: border-box;
+
+  transition: 0.2s;
+}
+
+.password-input-wrapper input:focus {
+  border-color: #168449;
+}
+
+.password-error {
+  margin-top: 10px;
+
+  color: #d93025;
+
+  font-size: 12px;
+}
+
+.password-login-button {
+  width: 100%;
+
+  height: 48px;
+
+  margin-top: 20px;
+
+  border: none;
+
+  background: #168449;
+
+  color: #ffffff;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.password-login-button:hover {
+  background: #116d3c;
+}
+
+
+/* =========================================
+   PASSWORD MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .password-page {
+    padding: 15px;
+  }
+
+  .password-card {
+    padding: 35px 22px;
+  }
+
+  .password-card h1 {
+    font-size: 24px;
+  }
+
+  .password-card p {
+    font-size: 13px;
+  }
+
+}
+
+
+/* =========================================
+   PASSWORD LANDSCAPE
+========================================= */
+
+@media (max-width: 900px) and (orientation: landscape) {
+
+  .password-page {
+    padding: 20px;
+  }
+
+  .password-card {
+    padding: 25px 30px;
+  }
+
+  .password-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 12px;
+  }
+
+  .password-card h1 {
+    font-size: 22px;
+  }
+
+  .password-card p {
+    margin-bottom: 15px;
+  }
+
+  .password-login-button {
+    margin-top: 12px;
+  }
+
+}

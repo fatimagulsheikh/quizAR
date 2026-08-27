@@ -10,27 +10,63 @@ import "./App.css";
 
 function App() {
   /* =========================
-     DIVIDE QUESTIONS INTO 3 TESTS
+     PASSWORD
+  ========================= */
+
+  const CORRECT_PASSWORD = "033220";
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  /* =========================
+     DIVIDE QUESTIONS
   ========================= */
 
   const tests = [
-    questions.slice(0, 30),   // Test 1 = 1-30
-    questions.slice(30, 60),  // Test 2 = 31-60
-    questions.slice(60, 90),  // Test 3 = 61-90
+    questions.slice(0, 30),
+    questions.slice(30, 60),
+    questions.slice(60, 90),
   ];
 
   /* =========================
      STATES
   ========================= */
 
-  // null = test selection screen
   const [testNumber, setTestNumber] = useState(null);
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentQuestion, setCurrentQuestion] =
+    useState(0);
 
-  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [selectedAnswers, setSelectedAnswers] =
+    useState({});
 
-  const [showResult, setShowResult] = useState(false);
+  const [showResult, setShowResult] =
+    useState(false);
+
+  /* =========================
+     PASSWORD LOGIN
+  ========================= */
+
+  const handleLogin = () => {
+    if (password === CORRECT_PASSWORD) {
+      setIsLoggedIn(true);
+      setPasswordError("");
+      setPassword("");
+    } else {
+      setPasswordError("Incorrect password. Please try again.");
+    }
+  };
+
+  /* =========================
+     ENTER KEY LOGIN
+  ========================= */
+
+  const handlePasswordKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleLogin();
+    }
+  };
 
   /* =========================
      CURRENT TEST
@@ -52,7 +88,9 @@ function App() {
 
   const globalQuestionNumber =
     testNumber !== null
-      ? (testNumber - 1) * 30 + currentQuestion + 1
+      ? (testNumber - 1) * 30 +
+        currentQuestion +
+        1
       : 0;
 
   /* =========================
@@ -84,7 +122,9 @@ function App() {
 
   const handleNext = () => {
     if (currentQuestion < currentTest.length - 1) {
-      setCurrentQuestion((previous) => previous + 1);
+      setCurrentQuestion(
+        (previous) => previous + 1
+      );
     } else {
       setShowResult(true);
     }
@@ -96,7 +136,9 @@ function App() {
 
   const handlePrevious = () => {
     if (currentQuestion > 0) {
-      setCurrentQuestion((previous) => previous - 1);
+      setCurrentQuestion(
+        (previous) => previous - 1
+      );
     }
   };
 
@@ -110,7 +152,7 @@ function App() {
   };
 
   /* =========================
-     CALCULATE CURRENT TEST SCORE
+     CURRENT TEST SCORE
   ========================= */
 
   const calculateScore = () => {
@@ -120,9 +162,14 @@ function App() {
 
     currentTest.forEach((item, index) => {
       const number =
-        (testNumber - 1) * 30 + index + 1;
+        (testNumber - 1) * 30 +
+        index +
+        1;
 
-      if (selectedAnswers[number] === item.answer) {
+      if (
+        selectedAnswers[number] ===
+        item.answer
+      ) {
         score++;
       }
     });
@@ -131,7 +178,7 @@ function App() {
   };
 
   /* =========================
-     CALCULATE FINAL SCORE
+     FINAL SCORE
   ========================= */
 
   const calculateFinalScore = () => {
@@ -140,9 +187,14 @@ function App() {
     tests.forEach((test, testIndex) => {
       test.forEach((item, questionIndex) => {
         const number =
-          testIndex * 30 + questionIndex + 1;
+          testIndex * 30 +
+          questionIndex +
+          1;
 
-        if (selectedAnswers[number] === item.answer) {
+        if (
+          selectedAnswers[number] ===
+          item.answer
+        ) {
           totalScore++;
         }
       });
@@ -152,7 +204,7 @@ function App() {
   };
 
   /* =========================
-     REVIEW CURRENT TEST
+     REVIEW TEST
   ========================= */
 
   const handleReview = () => {
@@ -181,16 +233,71 @@ function App() {
     setShowResult(false);
   };
 
-  /* =========================
-     RENDER
-  ========================= */
+  /* =====================================================
+     PASSWORD SCREEN
+  ===================================================== */
+
+  if (!isLoggedIn) {
+    return (
+      <main className="password-page">
+
+        <div className="password-card">
+
+          <div className="password-icon">
+            🔒
+          </div>
+
+          <h1>
+            Enter Password
+          </h1>
+
+          <p>
+            Please enter the password to
+            access the test.
+          </p>
+
+          <div className="password-input-wrapper">
+
+            <input
+              type="password"
+              value={password}
+              placeholder="Enter password"
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setPasswordError("");
+              }}
+              onKeyDown={handlePasswordKeyDown}
+            />
+
+          </div>
+
+          {passwordError && (
+            <div className="password-error">
+              {passwordError}
+            </div>
+          )}
+
+          <button
+            className="password-login-button"
+            onClick={handleLogin}
+          >
+            LOGIN
+          </button>
+
+        </div>
+
+      </main>
+    );
+  }
+
+  /* =====================================================
+     WEBSITE
+  ===================================================== */
 
   return (
     <main className="app">
 
-      {/* ==================================
-          TEST SELECTION SCREEN
-      ================================== */}
+      {/* TEST SELECTION */}
 
       {testNumber === null ? (
 
@@ -200,9 +307,7 @@ function App() {
 
       ) : !showResult ? (
 
-        /* ==================================
-           TEST SCREEN
-        ================================== */
+        /* TEST SCREEN */
 
         <TestScreen
           testNumber={testNumber}
@@ -218,9 +323,7 @@ function App() {
 
       ) : (
 
-        /* ==================================
-           RESULT SCREEN
-        ================================== */
+        /* RESULT SCREEN */
 
         <div className="test-container">
 
@@ -228,7 +331,7 @@ function App() {
 
             <div className="header-left">
 
-              <h1>TVDE TEST</h1>
+              <h1>TEST</h1>
 
               <span className="test-badge">
                 Test {testNumber}
@@ -242,25 +345,20 @@ function App() {
 
           </header>
 
-
-          {/* ==================================
-              TEST 1 & TEST 2 RESULT
-          ================================== */}
-
           {testNumber < 3 ? (
 
             <TestResult
               testNumber={testNumber}
               score={calculateScore()}
-              onNextTest={handleChooseAnotherTest}
+              onNextTest={
+                handleChooseAnotherTest
+              }
               onReview={handleReview}
             />
 
           ) : (
 
-            /* ==================================
-               FINAL RESULT AFTER TEST 3
-            ================================== */
+            /* FINAL RESULT */
 
             <div className="result-card">
 
@@ -276,20 +374,14 @@ function App() {
                 You completed all 90 questions.
               </p>
 
-              {/* FINAL SCORE */}
-
               <div className="result-score">
                 {calculateFinalScore()}
                 <span> / 90</span>
               </div>
 
-
-              {/* FINAL DETAILS */}
-
               <div className="result-details">
 
                 <div className="result-item">
-
                   <span>
                     Correct Answers
                   </span>
@@ -297,12 +389,9 @@ function App() {
                   <strong>
                     {calculateFinalScore()}
                   </strong>
-
                 </div>
 
-
                 <div className="result-item">
-
                   <span>
                     Wrong Answers
                   </span>
@@ -310,34 +399,32 @@ function App() {
                   <strong>
                     {90 - calculateFinalScore()}
                   </strong>
-
                 </div>
 
-
                 <div className="result-item">
-
                   <span>
                     Percentage
                   </span>
 
                   <strong>
                     {Math.round(
-                      (calculateFinalScore() / 90) * 100
-                    )}%
+                      (calculateFinalScore() /
+                        90) *
+                        100
+                    )}
+                    %
                   </strong>
-
                 </div>
 
               </div>
-
-
-              {/* BUTTONS */}
 
               <div className="result-buttons">
 
                 <button
                   className="review-button"
-                  onClick={handleChooseAnotherTest}
+                  onClick={
+                    handleChooseAnotherTest
+                  }
                 >
                   Choose Another Test
                 </button>
