@@ -12,7 +12,7 @@ function App() {
      PASSWORD
   ========================= */
 
-  const CORRECT_PASSWORD = "1991";
+  const CORRECT_PASSWORD = "1001";
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
