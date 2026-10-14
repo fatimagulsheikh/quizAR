@@ -802,24 +802,25 @@ const questions = [
 
   
   {
-    question: "Qual é o tempo máximo permitido para veículos TVDE operarem antes de passar por uma inspeção técnica?",
+    question: "É permitido ultrapassar neste local?",
+    image: "/images/245.jpg",
     options: [
-      "1 ano após a matrícula e, depois, anualmente",
-      "2 anos após a matrícula e, depois, bienalmente",
-      "Apenas no prazo estipulado pelo IMT",
+      "Sim.",
+      "Näo",
     ],
-    answer: "1 ano após a matrícula e, depois, anualmente",
+    answer: "Näo",
   },
 
   
   {
-    question: "Quem é responsável pela fiscalização do cumprimento das normas no serviço TVDE?",
+    question: "- O exame primårio da vitima consiste na:",
     options: [
-      "GNR e IMT",
-      "PSP, GNR e IMT",
-      "GNR e PSP",
+      "Observaqäo do diåmetro das pupilas, da coloraqäo, temperatura e grau de humidade da pele",
+      "Verificaqäo em primeiro lugar da existéncia de ventilaqäo.",
+      "Avaliaqäo em primeiro lugar da existéncia de pulsaq.äo.",
+      "Avaliaqäo em primeiro lugar do estado de consciéncia da vitima",
     ],
-    answer: "PSP, GNR e IMT",
+    answer: "Avaliaqäo em primeiro lugar do estado de consciéncia da vitima",
   },
 
   
@@ -856,13 +857,14 @@ const questions = [
   },
 
    {
-    question: "O processo de comunicação prevê a existência mínima de:",
+    question: " Em caso de acidente com a sua viatura, qual o procedimento que näo deve ser adotado:",
     options: [
-      "Um emissor.",
-      "Um recetor.",
-      "Um emissor e um recetor.",
+      "Manter a calma",
+      "Avaliar a seguranqa do local",
+      "Efetuar uma råpida avaliaq.äo da vitima",
+      "Abandonar o local",
     ],
-    answer: "Um emissor e um recetor.",
+    answer: "Abandonar o local",
   },
 
   // extra add
@@ -952,13 +954,13 @@ const questions = [
   },
 
   {
-    question: "Qual é a lotação máxima permitida para veículos utilizados no serviço TVDE?",
+    question: "Perante este sinal devo:",
+     image: "/images/107.jpg",
     options: [
-      "7 lugares, incluindo o motorista",
-      "9 lugares, incluindo o motorista",
-      "12 lugares, incluindo o motorista",
+      "Avanqar em primeiro lugar.",
+      "Ceder a passagem.",
     ],
-    answer: "9 lugares, incluindo o motorista",
+    answer: "Ceder a passagem.",
   },
 
 ];
