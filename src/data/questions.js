@@ -963,6 +963,98 @@ const questions = [
     answer: "Ceder a passagem.",
   },
 
+  {
+    question: "Ao circular nesta via e perante este sinal, fico a saber que:",
+     image: "/images/00.jpg",
+    options: [
+      "A 500 metros, vou ter informação sobre onde se encontra um posto de abastecimento de combustível.",
+      "Se encontra a 500 metros um posto de abastecimento de combustível com GPL.",
+      "Se encontra a 500 metros um posto de abastecimento de combustível."
+    ],
+    answer: "A 500 metros, vou ter informação sobre onde se encontra um posto de abastecimento de combustível.",
+  },
+
+
+
+
+
+   {
+    question: "Quem pode avançar em primeiro lugar nesta intersecção?",
+     image: "/images/11.jpg",
+    options: [
+      "Eu.",
+      "O condutor do veículo afecto à prestação de socorro.",
+      "O condutor que primeiro chegou à intersecção."
+    ],
+    answer: "O condutor do veículo afecto à prestação de socorro.",
+  },
+
+   {
+    question: "Perante a sinalização vertical, sou informado que a 250 metros vou encontrar:",
+     image: "/images/22.jpg",
+    options: [
+      "Uma escapatória.",
+      "Uma subida perigosa à direita.",
+      "Um atalho."
+    ],
+    answer: "Um atalho.",
+  },
+
+   {
+    question: "Que precauções devo adoptar no local em que me encontro?",
+     image: "/images/33.jpg",
+    options: [
+      "Circular com velocidade moderada.",
+      "Aumentar a distância de paragem.",
+      "Travar o mais rapidamente possível."
+    ],
+    answer: "Aumentar a distância de paragem.",
+  },
+
+   {
+    question: "Ao circular nesta via de trânsito, como devo proceder em caso de súbita redução de velocidade?",
+     image: "/images/44.jpg",
+    options: [
+      "Estou obrigado a utilizar as luzes de perigo.",
+      "Estou obrigado a utilizar as luzes de perigo mas apenas se existirem condições meteorológicas ou ambientais que tornem a visibilidade insuficiente.",
+      "Devo transitar pela berma."
+    ],
+    answer: "Estou obrigado a utilizar as luzes de perigo mas apenas se existirem condições meteorológicas ou ambientais que tornem a visibilidade insuficiente.",
+  },
+
+   {
+    question: "Este sinal significa que os autom6veis pesados estäo proibidos de ultrapassar.",
+     image: "/images/55.jpg",
+    options: [
+      "Sim",
+      "Näo",
+    ],
+    answer: "Sim",
+  },
+
+  {
+    question: "O sinal de mudanga de direqäo para a esquerda, do veiculo que segue å frente, pode indicar:",
+     image: "/images/666.jpg",
+    options: [
+      "DiminuiGäo de velocidade.",
+      "Inicio de manobra de marcha atrås.",
+      "Inicio de uma ultrapassagem."
+    ],
+    answer: "Inicio de uma ultrapassagem.",
+  },
+
+  {
+    question: "Pode ultrapassar o veiculo que circula å frente?",
+     image: "/images/77.jpg",
+    options: [
+      "Sim, a manobra é permitida.",
+      "Näo, devo aguardar que o veiculo termine a manobra.",
+    ],
+    answer: "Näo, devo aguardar que o veiculo termine a manobra.",
+  },
+
+   
+
 ];
 
 export default questions;

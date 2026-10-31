@@ -27,7 +27,7 @@ function App() {
   const tests = [
     questions.slice(0, 30),
     questions.slice(30, 60),
-    questions.slice(60, 90),
+    questions.slice(60, 98),
   ];
 
   /* =========================
