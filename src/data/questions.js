@@ -971,7 +971,7 @@ const questions = [
       "Se encontra a 500 metros um posto de abastecimento de combustível com GPL.",
       "Se encontra a 500 metros um posto de abastecimento de combustível."
     ],
-    answer: "A 500 metros, vou ter informação sobre onde se encontra um posto de abastecimento de combustível.",
+    answer: "Se encontra a 500 metros um posto de abastecimento de combustível.",
   },
 
 
@@ -986,7 +986,7 @@ const questions = [
       "O condutor do veículo afecto à prestação de socorro.",
       "O condutor que primeiro chegou à intersecção."
     ],
-    answer: "O condutor do veículo afecto à prestação de socorro.",
+    answer: "Eu.",
   },
 
    {
@@ -997,7 +997,7 @@ const questions = [
       "Uma subida perigosa à direita.",
       "Um atalho."
     ],
-    answer: "Um atalho.",
+    answer: "Uma escapatória.",
   },
 
    {
@@ -1008,7 +1008,7 @@ const questions = [
       "Aumentar a distância de paragem.",
       "Travar o mais rapidamente possível."
     ],
-    answer: "Aumentar a distância de paragem.",
+    answer: "Circular com velocidade moderada.",
   },
 
    {
@@ -1019,7 +1019,7 @@ const questions = [
       "Estou obrigado a utilizar as luzes de perigo mas apenas se existirem condições meteorológicas ou ambientais que tornem a visibilidade insuficiente.",
       "Devo transitar pela berma."
     ],
-    answer: "Estou obrigado a utilizar as luzes de perigo mas apenas se existirem condições meteorológicas ou ambientais que tornem a visibilidade insuficiente.",
+    answer: "Estou obrigado a utilizar as luzes de perigo.",
   },
 
    {
